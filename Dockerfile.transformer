@@ -1,0 +1,45 @@
+# Dockerfile for Transformer Service
+# Fixed version for network issues
+
+# Use Python 3.11 slim
+FROM python:3.11-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean \
+    && apt-get autoremove -y
+
+# Copy requirements first (for better caching)
+COPY requirements_transformer.txt ./requirements.txt
+
+# Install Python dependencies
+RUN pip install --no-cache-dir --index-url https://pypi.org/simple \
+    --trusted-host pypi.org \
+    --trusted-host files.pythonhosted.org \
+    -r requirements.txt
+
+# Copy service code
+COPY transformer_service.py transformer_service.py
+
+# Create models directory
+RUN mkdir -p ./models/transformer
+
+# Expose port
+EXPOSE 8001
+
+# Environment variables
+ENV MODEL_PATH=/app/models/transformer/final_model
+ENV LABEL_MAPPING_PATH=/app/models/transformer/label_mapping.json
+ENV PYTHONUNBUFFERED=1
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8001/health || exit 1
+
+# Run the service
+CMD ["python", "-u", "transformer_service.py"]

@@ -1,0 +1,35 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean \
+    && apt-get autoremove -y
+
+# Copy agent requirements
+COPY requirements_agent.txt ./requirements.txt
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy agent service
+COPY agent_service.py .
+
+# Environment variables
+ENV TFIDF_URL=http://tfidf:8002 \
+    TRANSFORMER_URL=http://transformer:8001 \
+    TFIDF_CONFIDENCE_THRESHOLD=0.85 \
+    SHORT_TEXT_THRESHOLD=50 \
+    LONG_TEXT_THRESHOLD=200 \
+    PYTHONUNBUFFERED=1
+
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+CMD ["python", "agent_service.py"]

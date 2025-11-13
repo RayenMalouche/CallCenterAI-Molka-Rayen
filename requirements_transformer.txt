@@ -1,0 +1,10 @@
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.12.3
+prometheus-client==0.19.0
+python-multipart==0.0.6
+transformers==4.35.2
+torch==2.6.0
+numpy==1.24.3
+accelerate>=0.20.1
+safetensors>=0.3.1

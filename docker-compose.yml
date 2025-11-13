@@ -1,0 +1,184 @@
+version: '3.8'
+
+services:
+  # ==================== Transformer Service ====================
+  transformer:
+    build:
+      context: .
+      dockerfile: Dockerfile.transformer
+    container_name: callcenterai-transformer
+    ports:
+      - "8001:8001"
+    environment:
+      - MODEL_PATH=/app/models/transformer/final_model
+      - LABEL_MAPPING_PATH=/app/models/transformer/label_mapping.json
+      - MAX_LENGTH=128
+      - DEV_MODE=true
+    volumes:
+      - ./models:/app/models:ro
+      - ./transformer_service.py:/app/transformer_service.py
+      - ./requirements_transformer.txt:/app/requirements.txt
+    networks:
+      - callcenterai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8001/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ==================== TF-IDF Service ====================
+  tfidf:
+    build:
+      context: .
+      dockerfile: Dockerfile.tfidf
+    container_name: callcenterai-tfidf
+    ports:
+      - "8002:8002"
+    environment:
+      - MODEL_PATH=/app/models/tfidf
+      - DEV_MODE=true
+    volumes:
+      - ./models:/app/models:ro
+      - ./tfidf_service.py:/app/tfidf_service.py
+      - ./requirements_tfidf.txt:/app/requirements.txt
+    networks:
+      - callcenterai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ==================== Agent Service ====================
+  agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+    container_name: callcenterai-agent
+    ports:
+      - "8000:8000"
+    environment:
+      - TFIDF_URL=http://tfidf:8002
+      - TRANSFORMER_URL=http://transformer:8001
+      - DEV_MODE=true
+    volumes:
+      - ./agent_service.py:/app/agent_service.py
+      - ./requirements_agent.txt:/app/requirements.txt
+    depends_on:
+      - transformer
+      - tfidf
+    networks:
+      - callcenterai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ==================== Frontend ====================
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: callcenterai-frontend
+    ports:
+      - "3001:80"
+    depends_on:
+      - agent
+    networks:
+      - callcenterai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ==================== MLflow ====================
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.9.2
+    container_name: callcenterai-mlflow
+    ports:
+      - "5000:5000"
+    environment:
+      - MLFLOW_BACKEND_STORE_URI=sqlite:///mlflow/mlflow.db
+      - MLFLOW_ARTIFACT_ROOT=/mlflow/artifacts
+    volumes:
+      - mlflow-data:/mlflow
+    networks:
+      - callcenterai-network
+    command: >
+      mlflow server
+      --host 0.0.0.0
+      --port 5000
+      --backend-store-uri sqlite:///mlflow/mlflow.db
+      --default-artifact-root /mlflow/artifacts
+    restart: unless-stopped
+
+  # ==================== Prometheus ====================
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    container_name: callcenterai-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    networks:
+      - callcenterai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ==================== Grafana ====================
+  grafana:
+    image: grafana/grafana:10.2.2
+    container_name: callcenterai-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=http://localhost:3000
+      - GF_INSTALL_PLUGINS=
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+    depends_on:
+      - prometheus
+    networks:
+      - callcenterai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+# ==================== Networks ====================
+networks:
+  callcenterai-network:
+    driver: bridge
+
+# ==================== Volumes ====================
+volumes:
+  mlflow-data:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local

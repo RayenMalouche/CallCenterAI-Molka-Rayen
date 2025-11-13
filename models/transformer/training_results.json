@@ -1,0 +1,19 @@
+{
+  "train_loss": 0.424615066576004,
+  "eval_accuracy": 0.8843018394648829,
+  "eval_f1": 0.884284367703977,
+  "eval_loss": 0.4459676146507263,
+  "config": {
+    "data_path": "/content/drive/MyDrive/datasetmlops/all_tickets_cleaned.csv",
+    "output_dir": "/content/drive/MyDrive/mlops_outputs/transformer",
+    "model_name": "distilbert-base-multilingual-cased",
+    "max_length": 128,
+    "num_epochs": 3,
+    "batch_size": 10,
+    "learning_rate": 2e-05,
+    "warmup_steps": 10,
+    "weight_decay": 0.01,
+    "test_size": 0.2,
+    "random_state": 42
+  }
+}

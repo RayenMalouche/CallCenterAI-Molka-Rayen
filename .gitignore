@@ -1,0 +1,75 @@
+# Python
+__pycache__/ 
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.mypy_cache/
+.dmypy.json
+.dmypy.json
+.pyre/
+
+# Virtual environments
+venv*/
+env*/
+
+# IDEs & Editors
+.idea/
+.vscode/
+*.sublime-*
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# MLflow
+mlflow/
+mlflow.db
+artifacts/
+
+# Docker volumes (Grafana/Prometheus data)
+grafana/data/
+prometheus/data/
+
+# Node.js / Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.env
+frontend/.env.local
+
+# Vite/React build cache
+frontend/.vite/
+
+# Python local models (large files & checkpoints – don't commit to Git; use Git LFS or external storage if needed)
+models/transformer/checkpoint-*
+models/transformer/final_model/model.safetensors
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
