@@ -170,8 +170,8 @@ CallCenterAI automatically classifies customer support tickets (emails, chat, ph
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/callcenterai.git
-cd callcenterai
+git clone https://github.com/RayenMalouche/ML-OPS-Molka-Rayen.git
+cd ML-OPS-Molka-Rayen
 ```
 
 ### 2. Prepare Models
@@ -710,7 +710,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Authors
 
-- **Your Name** - *Initial work* - [GitHub](https://github.com/yourusername)
+- **Mohamed Rayen Malouche** - [GitHub](https://github.com/RayenMalouche)
+- **Mohamed Rayen Malouche** - [GitHub](https://github.com/MolkaToubale)
 
 ---
 
@@ -726,8 +727,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 For issues and questions:
-- Open an issue on [GitHub Issues](https://github.com/yourusername/callcenterai/issues)
-- Contact: your.email@example.com
+- Open an issue on [GitHub Issues](https://github.com/RayenMalouche/callcenterai/issues)
+- Contact: rayenmalouche27@gmail.com
 
 ---
 
