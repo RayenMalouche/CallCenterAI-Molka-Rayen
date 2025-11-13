@@ -711,7 +711,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👥 Authors
 
 - **Mohamed Rayen Malouche** - [GitHub](https://github.com/RayenMalouche)
-- **Mohamed Rayen Malouche** - [GitHub](https://github.com/MolkaToubale)
+- **Molka Toubale** - [GitHub](https://github.com/MolkaToubale)
 
 ---
 
