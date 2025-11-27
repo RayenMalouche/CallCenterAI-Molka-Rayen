@@ -1,4 +1,11 @@
 """
+CallCenterAI - Intelligent Ticket Classification System
+Copyright (c) 2025 Rayen Malouche - Molka Toubale
+Licensed under the MIT License (see LICENSE file for details)
+SPDX-License-Identifier: MIT
+"""
+
+"""
 Complete API Testing Script for CallCenterAI
 Tests all services: Agent, TF-IDF, Transformer
 """
@@ -67,17 +74,17 @@ def print_header(text: str):
 
 def print_success(text: str):
     """Print success message"""
-    print(f"{Fore.GREEN}âœ" {text}")
+    print(f"{Fore.GREEN}✔ {text}")
 
 
 def print_error(text: str):
     """Print error message"""
-    print(f"{Fore.RED}âœ— {text}")
+    print(f"{Fore.RED}✖ {text}")
 
 
 def print_info(text: str):
     """Print info message"""
-    print(f"{Fore.YELLOW}â„¹ {text}")
+    print(f"{Fore.YELLOW}ℹ {text}")
 
 
 def test_health(service_name: str, url: str) -> bool:

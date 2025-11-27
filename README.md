@@ -5,6 +5,7 @@
 [![Python](https://img.shields.io/badge/Python-3.11-blue)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104-009688)](https://fastapi.tiangolo.com/)
 
+
 A complete MLOps solution for intelligent call center ticket classification using dual NLP approaches (TF-IDF + SVM and Transformer) with intelligent routing, monitoring, and visualization.
 
 ---
@@ -72,7 +73,7 @@ CallCenterAI automatically classifies customer support tickets (emails, chat, ph
       └───────────┬───────────┘
                   │
           ┌───────▼────────┐
-          │  Prometheus    │ (Port 9090)
+          │  Prometheus    │ (Port 9200)
           │  (Metrics)     │
           └───────┬────────┘
                   │
@@ -215,7 +216,7 @@ This will start:
 - TF-IDF Service (http://localhost:8002)
 - Frontend (http://localhost:3001)
 - Grafana (http://localhost:3000)
-- Prometheus (http://localhost:9090)
+- Prometheus (http://localhost:9200)
 - MLflow (http://localhost:5000)
 
 ### 4. Verify Deployment
@@ -232,13 +233,13 @@ curl http://localhost:8002/health  # TF-IDF
 
 ### 5. Access Services
 
-| Service | URL | Credentials |
-|---------|-----|-------------|
-| **Frontend** | http://localhost:3001 | - |
+| Service | URL                        | Credentials |
+|---------|----------------------------|-------------|
+| **Frontend** | http://localhost:3001      | - |
 | **Agent API** | http://localhost:8000/docs | - |
-| **Grafana** | http://localhost:3000 | admin/admin |
-| **Prometheus** | http://localhost:9090 | - |
-| **MLflow** | http://localhost:5000 | - |
+| **Grafana** | http://localhost:3000      | admin/admin |
+| **Prometheus** | http://localhost:9200      | - |
+| **MLflow** | http://localhost:5000      | - |
 
 ---
 
@@ -490,7 +491,7 @@ Access Grafana at http://localhost:3000 (admin/admin)
 
 ### Prometheus Metrics
 
-Access Prometheus at http://localhost:9090
+Access Prometheus at http://localhost:9200
 
 **Useful Queries:**
 ```promql

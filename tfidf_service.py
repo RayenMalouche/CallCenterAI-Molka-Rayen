@@ -1,4 +1,12 @@
 """
+CallCenterAI - Intelligent Ticket Classification System
+Copyright (c) 2025 Rayen Malouche - Molka Toubale
+Licensed under the MIT License (see LICENSE file for details)
+SPDX-License-Identifier: MIT
+"""
+
+
+"""
 FastAPI Service for TF-IDF + SVM Model - CallCenterAI
 Fast and efficient ticket classification using traditional NLP
 """

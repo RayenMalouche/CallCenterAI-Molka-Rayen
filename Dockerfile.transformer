@@ -1,45 +1,41 @@
-# Dockerfile for Transformer Service
-# Fixed version for network issues
-
-# Use Python 3.11 slim
+# Dockerfile.transformer – Guaranteed to build (Nov 2025)
 FROM python:3.11-slim
 
-# Set working directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
+# System deps
+RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean \
-    && apt-get autoremove -y
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first (for better caching)
+# Copy only requirements first (caching)
 COPY requirements_transformer.txt ./requirements.txt
 
-# Install Python dependencies
-RUN pip install --no-cache-dir --index-url https://pypi.org/simple \
-    --trusted-host pypi.org \
-    --trusted-host files.pythonhosted.org \
+# === STEP 1: Install PyTorch + TorchVision + Torchaudio (CPU) the safe way ===
+# We use pytorch's official CPU bundle – tiny index, no huge wheel download
+RUN pip install --no-cache-dir --timeout=100 \
+    torch==2.6.0+cpu torchvision==0.21.0+cpu torchaudio==2.6.0+cpu \
+    --index-url https://download.pytorch.org/whl/cpu
+
+# === STEP 2: Install the rest of the requirements ===
+RUN pip install --no-cache-dir --timeout=100 \
     -r requirements.txt
 
-# Copy service code
-COPY transformer_service.py transformer_service.py
+# === STEP 3: Copy code ===
+COPY transformer_service.py .
 
-# Create models directory
-RUN mkdir -p ./models/transformer
+# Create model dir (volume will override it)
+RUN mkdir -p /app/models/transformer
 
-# Expose port
-EXPOSE 8001
-
-# Environment variables
+# Environment
 ENV MODEL_PATH=/app/models/transformer/final_model
 ENV LABEL_MAPPING_PATH=/app/models/transformer/label_mapping.json
 ENV PYTHONUNBUFFERED=1
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+EXPOSE 8001
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=3 \
     CMD curl -f http://localhost:8001/health || exit 1
 
-# Run the service
-CMD ["python", "-u", "transformer_service.py"]
+CMD ["python", "transformer_service.py"]

@@ -5,7 +5,7 @@ export default function CallCenterAI() {
   const [text, setText] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [result, setResult] = useState<any | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);  // ← Fix: add <string | null>
   const [forceModel, setForceModel] = useState<string>('');
 
   const API_URL = 'http://localhost:8000';
@@ -36,20 +36,19 @@ export default function CallCenterAI() {
       const data = await response.json();
       setResult(data);
     } catch (err) {
-  let errorMessage: string = 'Failed to classify ticket';
+      let errorMessage: string = 'Failed to classify ticket';
 
-  if (err instanceof Error) {
-    errorMessage = err.message;
-  } else if (typeof err === 'string') {
-    errorMessage = err;
-  }
-  // If err is something else (rare), we still fall back to default message
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      } else if (typeof err === 'string') {
+        errorMessage = err;
+      }
 
-  setError(errorMessage);  // Now 100% safe: string → SetStateAction<string | null>
-  console.error('Error:', err);
-} finally {
-  setLoading(false);
-}
+      setError(errorMessage);
+      console.error('Error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getRoutingReasonText = (reason: string): string => {
@@ -66,8 +65,8 @@ export default function CallCenterAI() {
 
   const getConfidenceColor = (confidence: number): string => {
     if (confidence >= 0.9) return 'text-green-600';
-    if (confidence >= 0.75) return 'text-yellow-600';
-    return 'text-red-600';
+    if (confidence >= 0.75) return 'text-blue-600';
+    return 'text-yellow-600';
   };
 
   const examples = [
