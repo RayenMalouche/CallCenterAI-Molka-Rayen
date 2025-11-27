@@ -232,11 +232,12 @@ docker-compose logs -f transformer
 
 Once all services are running:
 
+- **Frontend (React)**: http://localhost
 - **Transformer API**: http://localhost:8001/docs
 - **TF-IDF API**: http://localhost:8002/docs
 - **Agent API**: http://localhost:8000/docs
 - **MLflow**: http://localhost:5000
-- **Prometheus**: http://localhost:9090
+- **Prometheus**: http://localhost:9200
 - **Grafana**: http://localhost:3000 (admin/admin)
 
 ### Step 5: Test the Complete Stack
@@ -256,7 +257,7 @@ curl -X POST http://localhost:8000/predict \
 ### Step 6: Monitor Services
 
 **View Metrics in Prometheus:**
-1. Open http://localhost:9090
+1. Open http://localhost:9200
 2. Go to Status > Targets
 3. Check that all services are "UP"
 4. Query metrics like: `transformer_predictions_total`
@@ -264,7 +265,7 @@ curl -X POST http://localhost:8000/predict \
 **View Dashboard in Grafana:**
 1. Open http://localhost:3000
 2. Login with admin/admin
-3. Add Prometheus as data source (http://prometheus:9090)
+3. Add Prometheus as data source (http://prometheus:9200)
 4. Create dashboards to visualize:
    - Request rate
    - Latency
@@ -334,7 +335,7 @@ pytest tests/ -v
 1. **Add Prometheus Data Source:**
    - Go to Configuration > Data Sources
    - Add Prometheus
-   - URL: `http://prometheus:9090`
+   - URL: `http://prometheus:9200`
    - Save & Test
 
 2. **Import Dashboard:**
@@ -459,17 +460,6 @@ curl http://localhost:8001/metrics         # Prometheus metrics
 curl http://localhost:8001/health          # Health check
 ```
 
-## 🎯 Next Steps
-
-1. ✅ **Test locally** - Ensure API works without Docker
-2. ✅ **Containerize** - Build and test Docker image
-3. ✅ **Add TF-IDF service** - Follow same pattern
-4. ✅ **Add Agent service** - Create intelligent router
-5. ✅ **Setup CI/CD** - GitHub Actions for automation
-6. ✅ **Configure monitoring** - Grafana dashboards
-7. ✅ **Run security scans** - Trivy + Bandit
-8. ✅ **Write documentation** - Complete README
-
 ## 📚 Additional Resources
 
 - FastAPI Documentation: https://fastapi.tiangolo.com/
@@ -485,5 +475,3 @@ If you encounter issues:
 2. Verify health endpoints
 3. Check Prometheus targets
 4. Review this guide carefully
-
-Good luck with your MLOps project! 🚀
