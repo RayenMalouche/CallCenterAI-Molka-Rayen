@@ -1,0 +1,9 @@
+# requirements.in – universal, human-readable deps
+fastapi
+uvicorn[standard]
+pydantic
+prometheus-client
+scikit-learn
+joblib
+numpy<2.0
+scipy

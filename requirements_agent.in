@@ -1,0 +1,11 @@
+
+fastapi
+uvicorn[standard]
+pydantic
+prometheus-client
+python-multipart
+
+# Critical: keep NumPy 1.x forever (pickle compatibility with your models)
+numpy<2.0
+
+httpx

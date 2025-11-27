@@ -51,7 +51,7 @@ CallCenterAI automatically classifies customer support tickets (emails, chat, ph
 
 ```
 ┌─────────────┐
-│   Frontend  │ (Port 3001)
+│   Frontend  │ (Port localhost)
 │   (React)   │
 └──────┬──────┘
        │
@@ -138,8 +138,8 @@ CallCenterAI automatically classifies customer support tickets (emails, chat, ph
 
 <div align="center">
 
-### Initial Grafana Dashboard State
-![Initial Grafana Dashboard State](screenshots/1.png)
+### Initial React Dashboard State
+![Initial React Dashboard State](screenshots/1.png)
 
 ### Agent (Auto) Result 
 ![Agent Result](screenshots/2.png)
@@ -150,6 +150,24 @@ CallCenterAI automatically classifies customer support tickets (emails, chat, ph
 ### TFIDF + SVM Result
 ![TFIDF + SVM Result](screenshots/4.png)
 
+---
+
+### 📈 Grafana Monitoring Dashboard
+The Grafana dashboard visualizes key operational metrics for the MLOps pipeline, providing a real-time view of service performance and routing decisions.
+![TFIDF + SVM Result](screenshots/grafana.png)
+
+
+---
+
+### 🔍 Prometheus Query UI
+Prometheus is the time-series database used to collect and store metrics from the FastAPI services. The UI allows for ad-hoc querying and inspection of raw metrics.
+![TFIDF + SVM Result](screenshots/Prometheus.png)
+
+---
+
+### 🧪 MLflow Experiments Tracking
+MLflow provides a centralized platform for managing the entire machine learning lifecycle, focusing here on tracking experiments and comparing model runs.
+![TFIDF + SVM Result](screenshots/MLflow.png)
 </div>
 ---
 
@@ -214,7 +232,7 @@ This will start:
 - Agent Service (http://localhost:8000)
 - Transformer Service (http://localhost:8001)
 - TF-IDF Service (http://localhost:8002)
-- Frontend (http://localhost:3001)
+- Frontend (http://localhost)
 - Grafana (http://localhost:3000)
 - Prometheus (http://localhost:9200)
 - MLflow (http://localhost:5000)
@@ -233,13 +251,13 @@ curl http://localhost:8002/health  # TF-IDF
 
 ### 5. Access Services
 
-| Service | URL                        | Credentials |
-|---------|----------------------------|-------------|
-| **Frontend** | http://localhost:3001      | - |
+| Service | URL                       | Credentials |
+|---------|---------------------------|-------------|
+| **Frontend** | http://localhost          | - |
 | **Agent API** | http://localhost:8000/docs | - |
-| **Grafana** | http://localhost:3000      | admin/admin |
-| **Prometheus** | http://localhost:9200      | - |
-| **MLflow** | http://localhost:5000      | - |
+| **Grafana** | http://localhost:3000     | admin/admin |
+| **Prometheus** | http://localhost:9200     | - |
+| **MLflow** | http://localhost:5000     | - |
 
 ---
 
@@ -255,10 +273,8 @@ callcenterai/
 ├── frontend/                    # React frontend application
 │   ├── src/
 │   │   ├── App.jsx
-│   │   ├── components/
 │   │   └── ...
-│   ├── package.json
-│   └── Dockerfile
+│   └── package*.json
 ├── models/                      # Trained models (not in git)
 │   ├── tfidf/
 │   └── transformer/
@@ -267,6 +283,7 @@ callcenterai/
 ├── grafana/                     # Grafana dashboards
 │   └── provisioning/
 │       ├── dashboards/
+│       │   ├── dashboard.yml
 │       │   └── callcenterai.json
 │       └── datasources/
 │           └── prometheus.yml

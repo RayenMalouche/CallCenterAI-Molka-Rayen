@@ -1,0 +1,14 @@
+
+fastapi
+uvicorn[standard]
+pydantic==2.12.3
+prometheus-client
+python-multipart
+
+# Critical: keep NumPy 1.x forever (pickle compatibility with your models)
+numpy<2.0
+
+transformers
+torch
+accelerate
+safetensors

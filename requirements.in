@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+pydantic
+transformers
+torch
+prometheus-client
+python-multipart
+numpy
+scikit-learn
+
+pandas
+matplotlib
+seaborn
