@@ -1,46 +1,81 @@
-# Getting Started with Create React App
+# CallCenterAI — the switchboard
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+The frontend for the CallCenterAI agent. React 19 + TypeScript on Create React App,
+Tailwind v3, framer-motion. It talks to the agent service only (`/predict`, `/health`).
 
-## Available Scripts
+```bash
+npm install
+npm start          # http://localhost:3000 — expects the agent at http://localhost:8000
+npm run build      # production build → build/, served by nginx in Dockerfile.frontend
+```
 
-In the project directory, you can run:
+Point it at another agent with `REACT_APP_API_URL=http://host:8000` at build time.
 
-### `npm start`
+## The design
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+The app is laid out as a **manual telephone exchange**, because that is what the
+system does: a ticket is an incoming call, the agent is the operator deciding who
+takes it, and the eight categories are the departments it can be put through to.
+Every device on the page comes from a cord board rather than from generic dashboard
+decoration:
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- **The patch panel** (`components/switchboard/patch-panel.tsx`) — the signature
+  element. Line 1 is patched through an operator position — *Local* (TF-IDF + SVM)
+  or *Trunk* (DistilBERT) — into one of eight department jacks. The cord draws in
+  that order, so the routing decision reads as a path. Each department's lamp burns
+  as bright as its score in `all_scores`. Below 560px the board redraws as two rows
+  of four instead of shrinking.
+- **The toll ticket** (`toll-ticket.tsx`) — operators logged every call on one. It
+  holds the agent's routing explanation: length, language, why that operator, the
+  department and confidence. When the agent scrubbed caller details, the ticket shows
+  the call *as the operator heard it*, with the scrubbed spans resolving into their
+  `[EMAIL]` / `[PHONE]` placeholders.
+- **Pilot lamps** in the nameplate poll `/health` every 15s for the agent and both
+  model services.
+- **The ledger** — held-out accuracy of both operators and DistilBERT's per-department F1,
+  read from `models/`.
+- **The directory** — every service in `docker-compose.yml`, listed with its number.
 
-### `npm test`
+**Palette** — defined once in `tailwind.config.js`; each colour has one job:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+| Token | Hex | Role |
+| --- | --- | --- |
+| `cream` | `#EDE4CF` | page ground, the enamel wall |
+| `faceplate` | `#F7F1E3` | panels and cards |
+| `bakelite` | `#2A1C13` | type, and the switchboard's mass |
+| `walnut` | `#4A3426` | cabinet wood |
+| `graphite` | `#6E6052` | secondary text |
+| `brass` | `#A8833A` | hardware: jack collars, rules, borders |
+| `lamp` | `#F0A73A` | a lit lamp — live and active states only |
+| `cord` | `#9A3324` | patch cords and faults. Nothing else |
 
-### `npm run build`
+**Type** — three roles: *Big Shoulders Display* for the engraved plates and
+headlines, *Public Sans* for reading, *Courier Prime* for anything an operator would
+have typed (the call slip, the toll ticket, numbers). All self-hosted through
+`@fontsource`, so the Docker image needs no network.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+**Motion** — a call rings (the Line 1 lamp blinks), then the cords draw line →
+operator → department and the lamps come up. Nothing moves otherwise. Under
+`prefers-reduced-motion` everything appears in place.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Reused from component-lab
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+| Component | Used for |
+| --- | --- |
+| `animated-ai-chat.tsx` | `ui/operator-line.tsx` — the call slip. Kept the auto-resizing textarea, `/` command palette and typing dots; the palette now picks the operator position (`force_model`: `/auto`, `/local`, `/trunk`) |
+| `hyper-text.tsx` | scrubbed caller details resolving into their placeholders on the toll ticket |
+| `stats-card.tsx` | the ledger's per-department F1 chart (comparison bar made optional, value labels added) |
 
-### `npm run eject`
+Hand-built for this design instead: the patch panel, toll ticket, nameplate,
+ledger layout and directory. Considered and rejected: `siri-wave` (a chromatic
+WebGL glow has no place on a bakelite board), `agent-plan` (a task planner with
+subtasks — the routing is four fixed checks, which the toll ticket states more
+plainly), and `ai-loader` (the ringing lamp already says "working").
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Notes
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- `lib/exchange.ts` mirrors the agent's `PII_PATTERNS` to show *which* words were
+  scrubbed; the agent only reports *that* it scrubbed. Keep them in step.
+- The ledger figures are copied from `models/tfidf/metadata.json` and
+  `models/transformer/{training_results.json,classification_report.csv}`. Update
+  them if the models are retrained.
