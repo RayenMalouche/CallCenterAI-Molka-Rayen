@@ -21,7 +21,7 @@ export function TollTicket({ call, serial }: { call: Call; serial: number }) {
     ['Length', `${routing.text_length} characters`],
     ['Language', routing.has_multilingual ? 'Not English' : 'English'],
     ['Caller details', routing.pii_scrubbed ? 'Scrubbed before routing' : 'None found'],
-    ['Position', `${operator.position} — ${operator.model}`],
+    ['Position', `${operator.position}, ${operator.model}`],
     ['Why', describeRouting(call)],
     ['Put through to', <strong key="to">{prediction.label}</strong>],
     ['Confidence', `${(prediction.confidence * 100).toFixed(1)}%`],

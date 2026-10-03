@@ -74,7 +74,7 @@ export function PatchPanel({ call, ringing, fault }: PatchPanelProps) {
     ? `Line patched through the ${OPERATORS[operator!].position.toLowerCase()} operator (${OPERATORS[operator!].model}) to ${prediction.label}, ${(prediction.confidence * 100).toFixed(1)}% confidence.`
     : ringing
       ? 'Incoming call ringing.'
-      : 'Board idle — no call connected.';
+      : 'Board idle, no call connected.';
 
   return (
     <div ref={frameRef} className="relative bg-walnut p-2 sm:p-3">

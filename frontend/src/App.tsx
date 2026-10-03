@@ -28,7 +28,7 @@ export default function App() {
       setSerial((n) => n + 1);
     } catch (err) {
       const reason = err instanceof Error ? err.message : String(err);
-      setFault(`${reason === 'Failed to fetch' ? 'No answer from the agent' : reason} — is it running at ${API_URL}?`);
+      setFault(`${reason === 'Failed to fetch' ? 'No answer from the agent' : reason}, is it running at ${API_URL}?`);
     } finally {
       setRinging(false);
     }
@@ -80,9 +80,9 @@ export default function App() {
             ) : (
               <p className="flex h-full min-h-[12rem] items-center justify-center border border-dashed border-brass/70 px-5 py-6 text-center font-type text-sm text-graphite">
                 {ringing
-                  ? 'Ringing — the agent is routing the call…'
+                  ? 'Ringing, the agent is routing the call…'
                   : fault
-                    ? 'No toll ticket — the call never connected.'
+                    ? 'No toll ticket, the call never connected.'
                     : 'No call on the board. Pick a caller on hold, or take a new call.'}
               </p>
             )}

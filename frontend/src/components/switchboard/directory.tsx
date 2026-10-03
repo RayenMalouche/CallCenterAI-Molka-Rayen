@@ -14,7 +14,7 @@ export function Directory() {
         <div>
           <p className="plate text-brass">Directory</p>
           <p className="mt-3 max-w-sm text-sm leading-relaxed text-faceplate/70">
-            CallCenterAI — multilingual ticket classification with smart routing, PII scrubbing and full MLOps
+            CallCenterAI, multilingual ticket classification with smart routing, PII scrubbing and full MLOps
             monitoring. By Molka &amp; Rayen.
           </p>
         </div>

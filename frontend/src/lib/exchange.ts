@@ -80,14 +80,14 @@ export const OPERATORS: Record<Operator, { position: string; model: string }> = 
 };
 
 export function describeRouting(call: Call): string {
-  if (call.forced) return 'Put through by hand — automatic routing skipped';
+  if (call.forced) return 'Put through by hand, automatic routing skipped';
   const reasons: Record<RoutingReason, string> = {
-    short_simple_text: 'Short call — the local operator took it',
+    short_simple_text: 'Short call, the local operator took it',
     high_confidence_tfidf: 'The local operator was sure of the department',
-    low_confidence_tfidf: 'The local operator was unsure — escalated to the trunk',
-    long_complex_text: 'Long, involved call — sent to the trunk',
-    multilingual_detected: 'Caller not speaking English — sent to the trunk',
-    fallback_to_transformer: 'Local line failed — fell back to the trunk',
+    low_confidence_tfidf: 'The local operator was unsure, escalated to the trunk',
+    long_complex_text: 'Long, involved call, sent to the trunk',
+    multilingual_detected: 'Caller not speaking English, sent to the trunk',
+    fallback_to_transformer: 'Local line failed, fell back to the trunk',
   };
   return reasons[call.prediction.routing.reason] ?? call.prediction.routing.reason;
 }
@@ -153,7 +153,7 @@ export const LEDGER = {
 
 export const SAMPLE_CALLS = [
   'My laptop screen is broken and needs replacement',
-  'Cannot login to my account, password reset not working — reach me at j.doe@example.com',
+  'Cannot login to my account, password reset not working, reach me at j.doe@example.com',
   'Need to order new office supplies for the team',
   'Mon ordinateur portable ne fonctionne plus',
   'الحاسوب المحمول لا يعمل',
